@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cliente · Painel</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2213%22%20fill%3D%22%239146FF%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2246%22%20text-anchor%3D%22middle%22%20font-family%3D%22Manrope%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2240%22%20font-weight%3D%22800%22%20fill%3D%22%23FFFFFB%22%3EO%3C%2Ftext%3E%3C%2Fsvg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--roxo:#9146FF;--black:#141110;--porcelana:#FFFFFB;--menta:#7BF07F;--pervinca:#CCC1FF;
+--ink:#FFFFFB;--muted:#9b95a6;--line:#2a2530;--panel:#1c1822;--amarelo:#f0d97b;--vermelho:#f0807b;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.5;
+background-image:radial-gradient(circle at 12% 0%,rgba(145,70,255,.10),transparent 42%),radial-gradient(circle at 92% 6%,rgba(204,193,255,.05),transparent 40%);min-height:100vh}
+.wrap{max-width:1100px;margin:0 auto;padding:26px 22px 70px}
+/* login */
+#login{max-width:360px;margin:14vh auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px}
+#login h1{font-family:'Manrope';font-size:22px;margin-bottom:6px}
+#login p{color:var(--muted);font-size:13px;margin-bottom:18px}
+#login input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:#15121b;color:var(--ink);font-size:15px;margin-bottom:12px}
+#login button,.tab,.rbtn{cursor:pointer}
+.btn{width:100%;padding:12px;border:0;border-radius:10px;background:var(--roxo);color:#fff;font-family:'Manrope';font-weight:700;font-size:14px}
+#login .err{color:var(--vermelho);font-size:12.5px;min-height:16px;margin-top:4px}
+/* header */
+.top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;margin-bottom:8px}
+.brand .k{font-family:'Manrope';font-weight:700;letter-spacing:.2em;text-transform:uppercase;font-size:10.5px;color:var(--roxo)}
+.brand h1{font-family:'Manrope';font-weight:800;font-size:25px;letter-spacing:-.02em;margin-top:2px}
+.statusline{font-size:11.5px;color:var(--muted);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.live{display:inline-flex;align-items:center;gap:6px}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--menta);box-shadow:0 0 0 0 rgba(123,240,127,.6);animation:p 2s infinite}
+.live.off i{background:var(--amarelo);animation:none}
+@keyframes p{0%{box-shadow:0 0 0 0 rgba(123,240,127,.5)}70%{box-shadow:0 0 0 7px rgba(123,240,127,0)}100%{box-shadow:0 0 0 0 rgba(123,240,127,0)}}
+.ranges{display:flex;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px}
+.rbtn{border:0;background:transparent;color:var(--muted);font-family:'Manrope';font-weight:600;font-size:12.5px;padding:7px 13px;border-radius:9px}
+.rbtn.on{background:var(--roxo);color:#fff}
+.demo{background:rgba(240,217,123,.12);border:1px solid rgba(240,217,123,.4);color:var(--amarelo);font-size:12px;border-radius:10px;padding:9px 13px;margin:12px 0}
+/* tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:18px 0 22px;overflow-x:auto}
+.tab{border:0;background:transparent;color:var(--muted);font-family:'Manrope';font-weight:600;font-size:14px;padding:11px 16px;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:var(--ink);border-bottom-color:var(--roxo)}
+.view{display:none}.view.on{display:block}
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
+.card h3{font-family:'Manrope';font-weight:700;font-size:15px;display:flex;align-items:center;gap:9px}
+.card .dot{width:10px;height:10px;border-radius:50%}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.gridg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:16px}
+.kpi .l{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.kpi .v{font-family:'Manrope';font-weight:800;font-size:20px;letter-spacing:-.02em;margin-top:3px}
+.kpi .s{font-size:10.5px;color:var(--muted);margin-top:2px}
+/* hero venda real */
+.hero{background:linear-gradient(135deg,rgba(145,70,255,.16),rgba(204,193,255,.05));border:1px solid var(--line);border-radius:18px;padding:24px;margin-bottom:16px}
+.hero .lbl{font-family:'Manrope';font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:10.5px;color:var(--pervinca)}
+.hero .big{font-family:'Manrope';font-weight:800;font-size:38px;letter-spacing:-.02em;margin-top:4px;line-height:1}
+.hero .sub{font-size:12.5px;color:var(--muted);margin-top:8px;display:flex;gap:16px;flex-wrap:wrap}
+.bar{height:9px;border-radius:6px;background:#2a2530;overflow:hidden;margin-top:14px}
+.bar > div{height:100%;border-radius:6px;background:var(--roxo)}
+.meta-ok{color:var(--menta)}.meta-mid{color:var(--amarelo)}.meta-low{color:var(--vermelho)}
+/* funil */
+.fnl{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+.fnl .fl{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:12px}
+.frow{display:flex;align-items:center;gap:10px}
+.fname{width:84px;font-size:11.5px;color:var(--muted);flex-shrink:0}
+.fbar{height:28px;border-radius:8px;display:flex;align-items:center;padding-left:11px;font-family:'Manrope';font-weight:700;font-size:13px;white-space:nowrap;min-width:56px}
+.fstep{font-size:11px;color:var(--muted);margin:5px 0 5px 94px}
+/* table */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-family:'Manrope';font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+td.r,th.r{text-align:right}
+.pill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:.03em}
+.pill.entregando{background:rgba(123,240,127,.14);color:var(--menta)}
+.pill.ativo_sem_entrega{background:rgba(240,217,123,.14);color:var(--amarelo)}
+.pill.pausado{background:#2a2530;color:var(--muted)}
+.fr-pill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.03em}
+.fr-Farmacia{background:rgba(145,70,255,.16);color:var(--pervinca)}
+.fr-Vet{background:rgba(123,240,127,.12);color:var(--menta)}
+.kpi-pill{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:6px;background:#2a2530;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.cpl-bom{color:var(--menta)}.cpl-ok{color:var(--amarelo)}.cpl-alto{color:var(--vermelho)}
+.tag{font-size:10.5px;color:var(--muted)}
+.muted{color:var(--muted);font-size:12px}
+.foot{margin-top:40px;border-top:1px solid var(--line);padding-top:16px;font-size:11px;color:var(--muted)}
+.note{background:rgba(145,70,255,.06);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--muted);margin-top:14px}
+/* toolbar período + pdf */
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btnpdf{cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-family:'Manrope';font-weight:600;font-size:12.5px;padding:8px 13px;border-radius:10px;display:inline-flex;align-items:center;gap:6px}
+.btnpdf:hover{border-color:var(--roxo)}
+.customrow{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.dtin{background:#15121b;border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:7px 10px;font-family:'Inter';font-size:13px;color-scheme:dark}
+.dtsep{color:var(--muted);font-size:12.5px}
+.rbtn.apply{background:var(--roxo);color:#fff}
+.sec-title{font-family:'Manrope';font-weight:700;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin:6px 0 12px}
+/* cabeçalho só do PDF */
+.printhead{display:none}
+.printhead .ph-k{font-family:'Manrope';font-weight:700;letter-spacing:.18em;text-transform:uppercase;font-size:10px;color:#9146FF}
+.printhead .ph-t{font-family:'Manrope';font-weight:800;font-size:21px;margin-top:2px}
+.printhead .ph-s{font-size:12px;color:#555;margin-top:3px}
+@media print{
+  @page{margin:14mm}
+  body{background:#fff !important;color:#141110 !important;background-image:none !important}
+  .wrap{max-width:none;padding:0}
+  .top,.tabs,#demoBanner,.foot,.customrow,.btnpdf{display:none !important}
+  .printhead{display:block !important;border-bottom:2px solid #9146FF;padding-bottom:10px;margin-bottom:18px}
+  .view{display:block !important;margin-bottom:18px}
+  .hero{background:#f4f0ff !important;border:1px solid #d8d8d8 !important}
+  .hero .lbl{color:#9146FF !important}.hero .sub{color:#555 !important}
+  .card{background:#fff !important;border:1px solid #d8d8d8 !important;break-inside:avoid;page-break-inside:avoid}
+  .fnl{border-top-color:#e4e4e4 !important}
+  th,td{border-bottom-color:#e4e4e4 !important}
+  .fbar,.pill,.fr-pill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media(max-width:720px){.cards{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<div id="login" style="display:none">
+  <h1>Cliente</h1>
+  <p>Painel de performance. Digite a senha de acesso.</p>
+  <input id="senha" type="password" placeholder="senha" autocomplete="current-password"/>
+  <button class="btn" onclick="entrar()">Entrar</button>
+  <div class="err" id="loginErr"></div>
+</div>
+
+<div class="wrap" id="app" style="display:none">
+  <div class="printhead" id="printhead"></div>
+  <div class="top">
+    <div class="brand">
+      <div class="k">Konge</div>
+      <h1>Cliente · Painel</h1>
+      <div class="statusline" id="statusline"></div>
+    </div>
+    <div class="toolbar">
+      <div class="ranges" id="ranges">
+        <button class="rbtn on" data-r="7">7 dias</button>
+        <button class="rbtn" data-r="15">15 dias</button>
+        <button class="rbtn" data-r="30">30 dias</button>
+        <button class="rbtn" data-r="lastmonth">Mês passado</button>
+        <button class="rbtn" data-r="custom">Personalizado</button>
+      </div>
+      <button class="btnpdf" id="btnPdf">Baixar PDF</button>
+    </div>
+  </div>
+  <div class="customrow" id="customRow" style="display:none">
+    <input type="date" id="dtFrom" class="dtin">
+    <span class="dtsep">até</span>
+    <input type="date" id="dtTo" class="dtin">
+    <button class="rbtn apply" id="applyCustom">Aplicar</button>
+  </div>
+  <div id="demoBanner"></div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-v="geral">Geral</button>
+    <button class="tab" data-v="detalhe">Detalhe</button>
+    <button class="tab" data-v="campanhas">Campanhas</button>
+    <!-- >>> CLIENTE: se preferir uma aba por grupo (ex.: Farmácia/Vet, ou por território),
+         duplique blocos data-v e renderize cardsGrupo("NomeDoGrupo") no render(). -->
+  </div>
+
+  <!-- GERAL: (venda real vs meta, se houver) + resumo por grupo -->
+  <div class="view on" id="v-geral">
+    <div id="heroVenda"></div>
+    <div class="sec-title">Resumo por grupo</div>
+    <div class="cards" id="geralGrupos"></div>
+    <div class="note">Investimento soma todos os grupos. Os resultados <b>não somam entre si</b>: visitas, conversas e compras são objetivos diferentes — o painel segmenta, nunca agrega num número único. ROAS só onde há receita (Google/e-commerce).</div>
+  </div>
+
+  <!-- DETALHE: cards por objetivo, de todos os grupos -->
+  <div class="view" id="v-detalhe">
+    <div id="detalheGrupos"></div>
+  </div>
+
+  <!-- CAMPANHAS -->
+  <div class="view" id="v-campanhas">
+    <div class="card"><div style="overflow-x:auto"><table id="campTable"></table></div></div>
+  </div>
+
+  <div class="foot">Dados de plataforma (Windsor) têm defasagem; atribuição pela data do clique, cache ~15 min. Venda real e meta do mês: Dashboard do cliente (atualização manual, quando houver). ROAS só onde há receita real (Google/e-commerce); Meta não mede venda no setor de saúde.</div>
+</div>
+
+<script>
+// ---- Demo (preview sem API): formato do payload do /api/dados ----
+const DEMO = {
+  range:"7", atualizado_em:"demo", modo:"demonstração",
+  fontes:{meta:"windsor",conversa_whatsapp:true,google:"windsor",venda_real:"dashboard_manual"},
+  alvos:{conversa:{bom:8.86,ok:15},vendas:{bom:33.33,ok:45},visitas:{bom:0.40,ok:0.80}},
+  venda_real:null,
+  resumoGrupos:[
+    {grupo:"Grupo A",spend:1246.33,visitas:7738,conversas:0,vendas:13,receita:1049.59,roas:0.84},
+    {grupo:"Grupo B",spend:556.54,visitas:0,conversas:27,vendas:0,receita:0,roas:null}
+  ],
+  canais:[
+    {grupo:"Grupo A",canal:"Meta",kpi_tipo:"visitas",spend:703.11,resultado:7738,receita:0,clicks:7738,link_clicks:7738,impressions:138491,reach:99596,custo_por_resultado:0.09,roas:null,cpm:5.08,ctr:5.59,frequency:1.39},
+    {grupo:"Grupo A",canal:"Google",kpi_tipo:"vendas",spend:543.22,resultado:13,receita:1049.59,clicks:913,link_clicks:null,impressions:73304,reach:null,custo_por_resultado:41.79,roas:1.93,cpm:7.41,ctr:1.25,frequency:null},
+    {grupo:"Grupo B",canal:"Meta",kpi_tipo:"conversa",spend:556.54,resultado:27,receita:0,clicks:153,link_clicks:153,impressions:41509,reach:11539,custo_por_resultado:20.61,roas:null,cpm:13.41,ctr:0.37,frequency:3.60}
+  ],
+  campanhas:[
+    {canal:"Meta",grupo:"Grupo A",nome:"[KO] [Tráfego] [Site] [Exemplo]",conjunto:null,kpi_tipo:"visitas",spend:703.11,resultado:7738,custo_por_resultado:0.09,receita:null,roas:null,clicks:7738,impressions:138491,cpm:5.08,ctr:5.59,status:"entregando"},
+    {canal:"Google",grupo:"Grupo A",nome:"[KO] [Pmax] [Compras] [Exemplo]",conjunto:null,kpi_tipo:"vendas",spend:543.22,resultado:13,custo_por_resultado:41.79,receita:1049.59,roas:1.93,clicks:913,impressions:73304,cpm:7.41,ctr:1.25,status:"entregando"},
+    {canal:"Meta",grupo:"Grupo B",nome:"[KO] [Leads] [Whatsapp] [Exemplo]",conjunto:null,kpi_tipo:"conversa",spend:556.54,resultado:27,custo_por_resultado:20.61,receita:null,roas:null,clicks:153,impressions:41509,cpm:13.41,ctr:0.37,status:"entregando"}
+  ]
+};
+let RANGE = "7", FROM = null, TO = null;
+
+const brl = (n)=> n==null? "—" : "R$ "+Number(n).toLocaleString('pt-BR',{maximumFractionDigits:0});
+const brl2= (n)=> n==null? "—" : "R$ "+Number(n).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const intf= (n)=> n==null? "—" : Number(Math.round(Number(n))).toLocaleString('pt-BR');
+const fmt = (n)=> n==null? "—" : Number(Math.round(n)).toLocaleString('pt-BR');
+const pct = (n)=> n==null? "—" : Number(n).toFixed(2).replace('.',',')+"%";
+const roasf=(n)=> n==null? "—" : Number(n).toFixed(2).replace('.',',')+"×";
+const fmtData=(s)=>{ if(!s)return ""; const p=s.split("-"); return `${p[2]}/${p[1]}/${p[0]}`; };
+function labelPeriodo(p){
+  if(p && p.from && p.to) return fmtData(p.from)+" a "+fmtData(p.to);
+  return ({"7":"Últimos 7 dias","15":"Últimos 15 dias","30":"Últimos 30 dias","lastmonth":"Mês passado"})[p&&p.range] || "Período selecionado";
+}
+// régua de cor pelo alvo do tipo de KPI (custo baixo = bom)
+function cprClass(v,tipo,alvos){
+  if(v==null||!alvos||!alvos[tipo])return "";
+  const a=alvos[tipo];
+  if(v<=a.bom)return "cpl-bom"; if(v<=a.ok)return "cpl-ok"; return "cpl-alto";
+}
+const KPI_LABEL={conversa:"Conversas",vendas:"Compras",visitas:"Visitas"};
+const KPI_UNIT ={conversa:"CPL",vendas:"CPA",visitas:"Custo/visita"};
+
+// funil genérico: impressões -> cliques -> resultado
+function funil(label,impr,clk,res,resLabel,roxo){
+  const col = roxo?"#9146FF":"#7BF07F", txt = roxo?"#FFFFFB":"#141110";
+  const ctr = impr? clk/impr*100 : null;
+  const cvr = clk? res/clk*100 : null;
+  return `<div class="fnl"><div class="fl">${label}</div>
+    <div class="frow"><div class="fname">Impressões</div><div class="fbar" style="width:100%;background:${col};color:${txt}">${fmt(impr)}</div></div>
+    <div class="fstep">↓ CTR ${pct(ctr)}</div>
+    <div class="frow"><div class="fname">Cliques</div><div class="fbar" style="width:58%;background:${col};color:${txt}">${fmt(clk)}</div></div>
+    <div class="fstep">↓ Conversão do clique ${pct(cvr)}</div>
+    <div class="frow"><div class="fname">${resLabel}</div><div class="fbar" style="width:30%;background:${col};color:${txt}">${fmt(res)}</div></div>
+  </div>`;
+}
+
+function render(d){
+  const alvos = d.alvos || DEMO.alvos;
+  // cabeçalho do PDF
+  document.getElementById("printhead").innerHTML =
+    `<div class="ph-k">Konge · Relatório de performance</div>
+     <div class="ph-t">Cliente · Painel</div>
+     <div class="ph-s">Período: ${labelPeriodo(d.periodo||{range:d.range})} · Emitido em ${new Date().toLocaleDateString('pt-BR')}</div>`;
+  // statusline
+  const live = d.fontes && d.fontes.conversa_whatsapp;
+  const quando = d.atualizado_em && d.atualizado_em!=="demo" ? new Date(d.atualizado_em).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : "agora";
+  document.getElementById("statusline").innerHTML =
+    `<span class="live ${live?'':'off'}"><i></i>${live?'Conversa de WhatsApp ao vivo':'Conversa indisponível'}</span><span>Atualizado ${quando}</span>`;
+  document.getElementById("demoBanner").innerHTML = d.modo==="demonstração"
+    ? '<div class="demo">Modo demonstração: dados de exemplo (a API ainda não respondeu). Em produção, números reais Meta + Google via Windsor.</div>' : '';
+
+  // ---- HERO: venda real vs meta ----
+  const v = d.venda_real;
+  const hero = document.getElementById("heroVenda");
+  if(v && v.venda_geral){
+    const pctMeta = v.atingido_pct!=null ? v.atingido_pct : (v.meta_mes? v.venda_geral/v.meta_mes*100 : null);
+    const cls = pctMeta==null?"":(pctMeta>=100?"meta-ok":(pctMeta>=85?"meta-mid":"meta-low"));
+    const barw = pctMeta==null?0:Math.min(100,pctMeta);
+    hero.innerHTML = `<div class="hero">
+      <div class="lbl">Venda real · ${v.mes||"mês corrente"} · ${v.fonte||"Dashboard cliente"}</div>
+      <div class="big">${brl(v.venda_geral)}</div>
+      <div class="sub">
+        ${v.meta_mes?`<span>Meta do mês: <b style="color:var(--ink)">${brl(v.meta_mes)}</b></span>`:""}
+        ${pctMeta!=null?`<span>Atingido: <b class="${cls}">${pct(pctMeta)}</b></span>`:""}
+        ${v.venda_ecomm?`<span>E-commerce: ${brl(v.venda_ecomm)}</span>`:""}
+        ${v.venda_whatsapp?`<span>WhatsApp: ${brl(v.venda_whatsapp)}</span>`:""}
+      </div>
+      ${pctMeta!=null?`<div class="bar"><div style="width:${barw}%"></div></div>`:""}
+    </div>`;
+  } else {
+    hero.innerHTML = ""; // meta removida por ora — volta ao setar OFICINAL_DASHBOARD
+  }
+
+  // ---- GERAL: resumo por grupo ----
+  const grupos = (d.resumoGrupos||[]);
+  document.getElementById("geralGrupos").innerHTML = grupos.map((g,i)=>{
+    const col = i % 2 ? "#7BF07F" : "#9146FF"; // alterna roxo/menta entre grupos
+    const kpis = [];
+    if(g.vendas)   kpis.push(`<div class="kpi"><div class="l">Compras</div><div class="v">${intf(g.vendas)}</div></div>`);
+    if(g.conversas)kpis.push(`<div class="kpi"><div class="l">Conversas</div><div class="v">${intf(g.conversas)}</div></div>`);
+    if(g.visitas)  kpis.push(`<div class="kpi"><div class="l">Visitas</div><div class="v">${intf(g.visitas)}</div></div>`);
+    if(g.receita)  kpis.push(`<div class="kpi"><div class="l">Receita</div><div class="v">${brl(g.receita)}</div><div class="s">ROAS ${roasf(g.roas)}</div></div>`);
+    return `<div class="card"><h3><span class="dot" style="background:${col}"></span>${g.grupo}</h3>
+      <div class="grid4">
+        <div class="kpi"><div class="l">Investimento</div><div class="v">${brl(g.spend)}</div></div>
+        ${kpis.join("")}
+      </div></div>`;
+  }).join("");
+
+  // ---- helper: cards por OBJETIVO (so indicadores relevantes do objetivo) ----
+  const OBJ_LABEL = {visitas:"Tráfego", conversa:"WhatsApp", vendas:"Compras"};
+  const RES_LABEL = {visitas:"Visitas", conversa:"Conversas", vendas:"Compras"};
+  const freqf = (n)=> n==null? "—" : Number(n).toFixed(2).replace('.',',');
+  function cardObjetivo(c){
+    const isMeta = c.canal==="Meta", col = isMeta?"#9146FF":"#7BF07F";
+    const cpr = c.custo_por_resultado!=null? c.custo_por_resultado : (c.resultado? c.spend/c.resultado : null);
+    const kpis=[`<div class="kpi"><div class="l">Investimento</div><div class="v">${brl(c.spend)}</div></div>`];
+    if(c.kpi_tipo==="vendas"){
+      kpis.push(`<div class="kpi"><div class="l">Compras</div><div class="v">${intf(c.resultado)}</div><div class="s ${cprClass(cpr,'vendas',alvos)}">CPA ${brl2(cpr)}</div></div>`);
+      kpis.push(`<div class="kpi"><div class="l">Receita</div><div class="v">${brl(c.receita)}</div><div class="s">ROAS ${roasf(c.roas)}</div></div>`);
+      kpis.push(`<div class="kpi"><div class="l">Cliques</div><div class="v">${intf(c.clicks)}</div><div class="s">CTR ${pct(c.ctr)}</div></div>`);
+    } else if(c.kpi_tipo==="conversa"){
+      kpis.push(`<div class="kpi"><div class="l">Conversas</div><div class="v">${intf(c.resultado)}</div><div class="s ${cprClass(cpr,'conversa',alvos)}">CPL ${brl2(cpr)}</div></div>`);
+      kpis.push(`<div class="kpi"><div class="l">Alcance</div><div class="v">${fmt(c.reach)}</div><div class="s">Freq. ${freqf(c.frequency)}</div></div>`);
+      kpis.push(`<div class="kpi"><div class="l">CPM</div><div class="v">${brl2(c.cpm)}</div><div class="s">CTR ${pct(c.ctr)}</div></div>`);
+    } else {
+      kpis.push(`<div class="kpi"><div class="l">Visitas</div><div class="v">${intf(c.resultado)}</div><div class="s">${brl2(cpr)}/visita</div></div>`);
+      kpis.push(`<div class="kpi"><div class="l">Alcance</div><div class="v">${fmt(c.reach)}</div><div class="s">Freq. ${freqf(c.frequency)}</div></div>`);
+      kpis.push(`<div class="kpi"><div class="l">CPM</div><div class="v">${brl2(c.cpm)}</div><div class="s">CTR ${pct(c.ctr)}</div></div>`);
+    }
+    const titulo = `${c.canal} · ${OBJ_LABEL[c.kpi_tipo]||c.kpi_tipo}`;
+    const tag = isMeta ? ' <span class="tag">· meio de funil</span>' : ' <span class="tag">· motor</span>';
+    return `<div class="card"><h3><span class="dot" style="background:${col}"></span>${titulo}${tag}</h3>
+      <div class="grid4">${kpis.join("")}</div>
+      ${funil("Funil de mídia",c.impressions,c.clicks,c.resultado,RES_LABEL[c.kpi_tipo]||"Resultado",isMeta)}
+    </div>`;
+  }
+  // ---- DETALHE: uma seção por grupo, com seus cards por objetivo ----
+  document.getElementById("detalheGrupos").innerHTML = grupos.map(g=>{
+    const cards = (d.canais||[]).filter(c=>c.grupo===g.grupo).sort((a,b)=>b.spend-a.spend).map(cardObjetivo).join("")
+      || `<div class="card"><div class="muted">Sem campanha com entrega no período.</div></div>`;
+    return `<div class="sec-title">${g.grupo}</div><div class="cards">${cards}</div>`;
+  }).join("") || `<div class="card"><div class="muted">Sem dado no período.</div></div>`;
+
+  // ---- CAMPANHAS ----
+  const ct = document.getElementById("campTable");
+  ct.innerHTML = `<thead><tr><th>Grupo</th><th>Canal</th><th>Campanha</th><th>KPI</th><th>Status</th><th class="r">Invest.</th><th class="r">Result.</th><th class="r">Custo/result.</th><th class="r">ROAS</th></tr></thead><tbody>`
+    + (d.campanhas||[]).slice().sort((a,b)=>b.spend-a.spend).map(c=>`<tr>
+        <td><span class="kpi-pill">${c.grupo}</span></td>
+        <td>${c.canal}</td>
+        <td>${c.conjunto?`<div>${c.conjunto}</div><div class="tag">${c.nome}</div>`:c.nome}</td>
+        <td><span class="kpi-pill">${KPI_LABEL[c.kpi_tipo]||c.kpi_tipo}</span></td>
+        <td><span class="pill ${c.status}">${({entregando:"entregando",ativo_sem_entrega:"sem entrega",pausado:"pausada"})[c.status]||c.status}</span></td>
+        <td class="r">${brl(c.spend)}</td>
+        <td class="r">${intf(c.resultado)}</td>
+        <td class="r ${cprClass(c.custo_por_resultado,c.kpi_tipo,alvos)}">${brl2(c.custo_por_resultado)} <span class="tag">${KPI_UNIT[c.kpi_tipo]||""}</span></td>
+        <td class="r">${c.roas!=null?roasf(c.roas):'—'}</td></tr>`).join("")
+    + `</tbody>`;
+}
+
+async function boot(){
+  try{
+    let url = "/api/dados?range="+RANGE;
+    if(RANGE==="custom" && FROM && TO) url += "&from="+FROM+"&to="+TO;
+    const r = await fetch(url, {credentials:"same-origin"});
+    if(r.status===401){ showLogin(); return; }
+    if(!r.ok) throw new Error("http "+r.status);
+    const d = await r.json();
+    showApp(); render(d);
+  }catch(e){
+    showApp(); render({...DEMO, range:RANGE, modo:"demonstração"});
+  }
+}
+function showLogin(){ document.getElementById("login").style.display="block"; document.getElementById("app").style.display="none"; }
+function showApp(){ document.getElementById("login").style.display="none"; document.getElementById("app").style.display="block"; }
+async function entrar(){
+  const senha = document.getElementById("senha").value;
+  const err = document.getElementById("loginErr"); err.textContent="";
+  try{
+    const r = await fetch("/api/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({senha})});
+    if(r.ok){ boot(); } else { err.textContent="Senha incorreta."; }
+  }catch(e){ err.textContent="Falha ao validar."; }
+}
+document.getElementById("senha").addEventListener("keydown",e=>{if(e.key==="Enter")entrar();});
+
+// tabs
+document.getElementById("tabs").addEventListener("click",e=>{
+  const t=e.target.closest(".tab"); if(!t)return;
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
+  t.classList.add("on"); document.getElementById("v-"+t.dataset.v).classList.add("on");
+});
+// ranges
+document.getElementById("ranges").addEventListener("click",e=>{
+  const b=e.target.closest(".rbtn"); if(!b)return;
+  document.querySelectorAll("#ranges .rbtn").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");
+  const r=b.dataset.r, cr=document.getElementById("customRow");
+  if(r==="custom"){ cr.style.display="flex"; return; }
+  cr.style.display="none"; RANGE=r; boot();
+});
+document.getElementById("applyCustom").addEventListener("click",()=>{
+  let f=document.getElementById("dtFrom").value, t=document.getElementById("dtTo").value;
+  if(!f||!t) return;
+  if(f>t){ const tmp=f; f=t; t=tmp; }
+  FROM=f; TO=t; RANGE="custom"; boot();
+});
+document.getElementById("btnPdf").addEventListener("click",()=>window.print());
+
+boot();
+</script>
+</body>
+</html>
