@@ -1,6 +1,6 @@
 # dash-modelo · Painel de Performance Konge (modelo replicável)
 
-Repositório **master** para clonar a cada novo cliente. Lê Meta + Google pelo Windsor e entrega ao cliente um painel de relatoria na Vercel. Sem banco, sem framework.
+Repositório **master** para clonar a cada novo cliente. Lê Meta + Google pelo api ads e entrega ao cliente um painel de relatoria na Vercel. Sem banco, sem framework.
 
 > **Este repo não tem dado de cliente** (IDs e chaves são sempre env var) — por isso pode ficar público como referência. Os repos de cliente derivados **ficam privados.**
 
@@ -43,7 +43,7 @@ Tudo no topo de `api/dados.js`, no bloco `>>> CLIENTE: CONFIGURAÇÃO <<<`:
 | Ponto | Variável / função | O que ajustar |
 |---|---|---|
 | Contas Meta | `META_ACCOUNTS` | IDs das contas + nome do grupo de cada |
-| Conta Google | `GOOGLE_MATCH` | substring do `account_name` no Windsor |
+| Conta Google | `GOOGLE_MATCH` | substring do `account_name` no api ads |
 | Tem ROAS? | `GOOGLE_TEM_RECEITA` | `true` e-comm / `false` lead-gen |
 | Campo de conversa | `META_CONVERSA_FIELD` | conversa WhatsApp (padrão) ou conversão personalizada |
 | Régua de cor | `ALVOS` | CPL / CPA / custo-visita alvo do plano |
@@ -52,7 +52,7 @@ Tudo no topo de `api/dados.js`, no bloco `>>> CLIENTE: CONFIGURAÇÃO <<<`:
 
 Front (`index.html`): título/marca (placeholder "Cliente"), e — se quiser — abas por grupo.
 
-Env vars na Vercel (nunca em código): `WINDSOR_API_KEY`, `MODELO_ACCESS_PASSWORD` (opcional), `MODELO_DASHBOARD` (opcional), `MODELO_META_1/2`, `MODELO_GOOGLE_MATCH`. Renomear o prefixo `MODELO_` para o do cliente ao clonar.
+Env vars na Vercel (nunca em código): `api ads_API_KEY`, `MODELO_ACCESS_PASSWORD` (opcional), `MODELO_DASHBOARD` (opcional), `MODELO_META_1/2`, `MODELO_GOOGLE_MATCH`. Renomear o prefixo `MODELO_` para o do cliente ao clonar.
 
 ---
 
@@ -60,7 +60,7 @@ Env vars na Vercel (nunca em código): `WINDSOR_API_KEY`, `MODELO_ACCESS_PASSWOR
 
 Já resolvidos e testados — quebrar isso re-introduz bugs antigos:
 
-- **Consolidação por conjunto/campanha** antes de somar (Windsor pode vir por dia/rede → senão dobra custo/resultado).
+- **Consolidação por conjunto/campanha** antes de somar (api ads pode vir por dia/rede → senão dobra custo/resultado).
 - **Reach não é somável** como custo: frequência = impressões ÷ alcance, calculada no agregado (não somar frequência).
 - **Três KPIs não somam:** o painel segmenta por grupo e objetivo, nunca agrega num "resultado" único.
 - **ROAS só onde há receita real** (Google/e-comm). No Meta fica de fora — estrutural (o pixel não pega venda no setor de saúde).
@@ -73,9 +73,9 @@ Já resolvidos e testados — quebrar isso re-introduz bugs antigos:
 ## Armadilhas conhecidas
 
 - **`req.query` é `undefined`** em função serverless sem framework → ler por `new URL(req.url, "http://localhost").searchParams`.
-- **ID do Google no Windsor** quando filtrar por ID: usar formato **hifenizado** (`940-741-5886`); sem hífen retorna outro cliente. (Aqui filtramos por `account_name`, mais robusto.)
-- **Data do Windsor sempre explícita** — ano errado retorna campanhas de outro cliente.
-- **`actions_lead` volta zero** em campanha de WhatsApp; o campo certo é a **conversa** (`actions_onsite_conversion_messaging_conversation_started_7d`). Confirmado que **popula** no Windsor.
+- **ID do Google no api ads** quando filtrar por ID: usar formato **hifenizado** (`940-741-5886`); sem hífen retorna outro cliente. (Aqui filtramos por `account_name`, mais robusto.)
+- **Data do api ads sempre explícita** — ano errado retorna campanhas de outro cliente.
+- **`actions_lead` volta zero** em campanha de WhatsApp; o campo certo é a **conversa** (`actions_onsite_conversion_messaging_conversation_started_7d`). Confirmado que **popula** no api ads.
 - **`reach`/`frequency`** bateram via tool, mas confirmar na primeira execução serverless real.
 
 ---
@@ -94,6 +94,6 @@ Já resolvidos e testados — quebrar isso re-introduz bugs antigos:
 ## Arquivos
 
 - `index.html` — front: login + abas (Geral / Detalhe / Campanhas) + período + PDF. IDV congelado.
-- `api/dados.js` — fetch Windsor, classifica grupo + KPI, agrega, devolve JSON. Bloco CLIENTE no topo.
+- `api/dados.js` — fetch api ads, classifica grupo + KPI, agrega, devolve JSON. Bloco CLIENTE no topo.
 - `api/auth.js` — senha → cookie.
 - `api/_lib.js` — helpers de sessão.
